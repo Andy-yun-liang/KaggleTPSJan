@@ -15,7 +15,7 @@ library(gridExtra)
 
 
 #reading in the files
-```{r include=FALSE}
+```{r}
 train_data = read.csv("train.csv")
 test_data = read.csv("test.csv")
 submission = read.csv("sample_submission.csv")
@@ -23,13 +23,13 @@ gdp_data = read.csv("GDP_data_2015_to_2019_Finland_Norway_Sweden.csv")
 ```
 
 
-```{r include=FALSE}
+```{r}
 summary(train_data)
 #looking at the summary statistics, the things I need to change is the date to datetime and then the rest of the independent variables into categorical variables
 ```
 
 #fixing the columns for the train set
-```{r include=FALSE}
+```{r}
 train_data$date = ymd(train_data$date)
 train_data$country = as.factor(train_data$country)
 train_data$store = as.factor(train_data$store)
@@ -40,7 +40,7 @@ train_data$month = month(train_data$date)
 
 
 #feature engineering on train set
-```{r include=FALSE}
+```{r}
 #1. adding a column representing day of the week
 dayofweek = weekdays(train_data$date)
 
@@ -75,7 +75,7 @@ train_final = train_data1 %>% left_join(gdp_longer,by=c("year","country"))
 #repeat the entire process with the testing set
 
 #fixing the test set variables
-```{r include=FALSE}
+```{r}
 test_data$date = ymd(test_data$date)
 test_data$country = as.factor(test_data$country)
 test_data$store = as.factor(test_data$store)
@@ -106,7 +106,7 @@ test_final = test_data1 %>% left_join(gdp_longer,by=c("year","country"))
 
 
 #Data visualization: Only for train set because we don't have response variable for test set.
-```{r include=FALSE}
+```{r}
 
 train_final %>% mutate(year = factor(year),country = as.factor(country)) %>% ggplot(aes(year,num_sold,colour=country)) +geom_boxplot() + ylab("Units Sold") + ggtitle("Boxplot of total units sold")
 
@@ -115,7 +115,7 @@ train_final %>% mutate(year = factor(year),country = as.factor(country)) %>% ggp
 
 
 #Line plot of the number of units sold group by country, store, and product.
-```{r include=FALSE}
+```{r}
 
 products = c("Kaggle Mug","Kaggle Hat","Kaggle Sticker")
 stores = c("KaggleMart","KaggleRama")
@@ -136,7 +136,7 @@ marrangeGrob(lineplot_list,nrow=2,ncol=1)
 
 
 #Zoomed in line plot for average unit
-```{r include=FALSE}
+```{r}
 
 products = c("Kaggle Mug","Kaggle Hat","Kaggle Sticker")
 stores = c("KaggleMart","KaggleRama")
@@ -159,7 +159,7 @@ marrangeGrob(another_list,nrow=2,ncol=2)
 
 
 #Zoomed in line plot for total unit
-```{r include=FALSE}
+```{r}
 
 another_list2 = list()
 
