@@ -124,7 +124,7 @@ a_holiday = ifelse(is.na(train_final_fe$Name),0,1)
 
 #### Building visualizations to help me decide if I want to do build a time series model or a regression based model
 
-Line Plot of the number of units sold group by country, store, and product.
+##### Line Plot of the number of units sold group by country, store, and product.
 ```r
 products = c("Kaggle Mug","Kaggle Hat","Kaggle Sticker")
 
@@ -146,12 +146,35 @@ marrangeGrob(lineplot_list,nrow=3,ncol=2)
 Looking at the shape of this line plot we can tell that there's some seasonality due to specific spikes year round.
 
 
-Line plot of the average sales unit group by country, store, and product.
+##### Line plot of the average units sold, grouped by country, store, and product.
+
+```r
+products = c("Kaggle Mug","Kaggle Hat","Kaggle Sticker")
+
+stores = c("KaggleMart","KaggleRama")
+
+country = c("Finland","Norway","Sweden")
+
+params = expand.grid(product = products,store = stores,country = country)
+
+another_list = list()
+
+for(i in 1:nrow(params)){
+another_list[[i]] = train_final %>% filter(product == params[i,1] & store== params[i,2] & country ==params[i,3]) %>% group_by(month,year) %>% summarise(avg_sales = mean(num_sold)) %>% mutate(year = as.factor(year)) %>% ggplot(aes(month,avg_sales,color=year)) + geom_point() + geom_line() + ylab("Average units") +ggtitle(paste0("Avg Sale of ",params[i,1],"s per Month \n ",params[i,2],":",params[i,3])) + theme(plot.title = element_text(size = 8))
+}
+
+marrangeGrob(another_list,nrow=3,ncol=3)
+```
 
 ![part1](https://user-images.githubusercontent.com/73871814/155876876-4db1834d-9a02-4256-88cf-5632cf30982e.PNG)
 
 
 ![part2](https://user-images.githubusercontent.com/73871814/155876880-a31a263b-e57b-4902-82fe-431a72dbaee3.PNG)
+
+
+##### Line plot of the total units sold, grouped by country, store, and product.
+
+
 
 
 #### Correlation Plot
