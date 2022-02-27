@@ -297,7 +297,7 @@ preds=predict(rf_tune_fit,newdata = v_set)
 
 #### Extreme Gradient Boost
 
-The extreme gradient boost algorithm is an iterative boosting algorithm that focuses on minimizing the 
+The extreme gradient boost algorithm is esentially a better version of the GBM algorithm with advanced features that supports L1 and L2 regularization and uses the second order derivative when it computes for the objective function. The second order derivative gives the algorithm a more indepth path of the direction of the gradient.
 
 ```r
 xgb_grid = expand.grid(nrounds = c(500),max_depth = c(2,4,6,8,10),
@@ -322,7 +322,7 @@ preds=predict(xgb_tune_fit,newdata = v_set)
 
 #the RMSE of this algorithm is 905.61, significantly better than the random forest algorithm.
 
-The best tuned setting are nrounds = 500, max_depth = 6, eta = 0.1, gamma = 2, colsample_bytree = 1 ,min_child_weight = 1, and subsample =	1
+The best tuned setting are nrounds = 500, max_depth = 6, eta = 0.1, gamma = 2, colsample_bytree = 1 ,min_child_weight = 1,and subsample =1
 ```
 
 <a name="summary"></a>
