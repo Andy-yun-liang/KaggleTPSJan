@@ -303,27 +303,27 @@ The extreme gradient boost algorithm is an iterative boosting algorithm that foc
 xgb_grid = expand.grid(nrounds = c(500),max_depth = c(2,4,6,8,10),
 eta = c(0.01,0.05,0.1,0.3),
 gamma = c(1,2),
-colsample_bytree=c(0.5,1),
-min_child_weight=1,
-subsample=c(1)
+colsample_bytree = c(0.5,1),
+min_child_weight = c(1,2),
+subsample = c(1,2)
 )
 
 trainctrl = trainControl(method="cv", number = 5, allowParallel = TRUE)
 
 xgb_tune_fit = train(num_sold~.,data=t_set,
-method="xgbTree",
-trControl=trainctrl,
-tuneGrid=xgb_grid,
-verbose=FALSE)
+method = "xgbTree",
+trControl = trainctrl,
+tuneGrid = xgb_grid,
+verbose = FALSE)
 
 preds=predict(xgb_tune_fit,newdata = v_set)
 
 (rmse=mean((v_set$num_sold-preds)^2))
 
-#the RMSE of this algorithm is 905.61, significantly better than the random forest algorithm
+#the RMSE of this algorithm is 905.61, significantly better than the random forest algorithm.
+
+The best tuned setting are nrounds = 500, max_depth = 6, eta = 0.1, gamma = 2, colsample_bytree = 1 ,min_child_weight = 1, and subsample =	1
 ```
-
-
 
 <a name="summary"></a>
 ## 7. Summary
