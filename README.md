@@ -124,7 +124,7 @@ a_holiday = ifelse(is.na(train_final_fe$Name),0,1)
 
 #### Building visualizations to help me decide if I want to do build a time series model or a regression based model
 
-Line Plot
+Line Plot of the number of units sold group by country, store, and product.
 ```r
 products = c("Kaggle Mug","Kaggle Hat","Kaggle Sticker")
 
@@ -146,6 +146,12 @@ marrangeGrob(lineplot_list,nrow=3,ncol=2)
 Looking at the shape of this line plot we can tell that there's some seasonality due to specific spikes year round.
 
 
+Line plot of the average sales unit group by country, store, and product.
+
+![part1](https://user-images.githubusercontent.com/73871814/155876876-4db1834d-9a02-4256-88cf-5632cf30982e.PNG)
+
+
+![part2](https://user-images.githubusercontent.com/73871814/155876880-a31a263b-e57b-4902-82fe-431a72dbaee3.PNG)
 
 
 #### Correlation Plot
