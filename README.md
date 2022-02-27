@@ -9,7 +9,10 @@ This is my first time participating in Kaggle's Tabular Playground Series, the l
 2. [Data Preprocssing](#data_preprocessing)
 3. [Feature Engineering](#feature_engineering)
 4. [Visualizations](#viz)
-5. [Final Model and Submission](#modelbuild)
+5. [Finalizing Train Set](#final_train)
+6. [Models](#models)
+7. [Summary](#summary)
+
 
 <a name ="background"></a>
 ## 1. Data Source
@@ -122,9 +125,19 @@ a_holiday = ifelse(is.na(train_final_fe$Name),0,1)
 <a name="viz"></a>
 ## 4. Visualizations
 
-#### Building visualizations to help me decide if I want to do build a time series model or a regression based model
+#### Boxplot of the number of units sold grouped by country, store, and product
+```r
+train_final %>% mutate(year = factor(year),country = as.factor(country)) %>% 
+ggplot(aes(year,num_sold,colour=country)) +geom_boxplot() + ylab("Units Sold") + ggtitle("Boxplot of total units sold")
+```
+![boxplot](https://user-images.githubusercontent.com/73871814/155878206-4907e614-9195-4310-99a1-f26e0609b15d.PNG)
 
-##### Line Plot of the number of units sold group by country, store, and product.
+The boxplot shows that more units are getting sold every year, this makes sense because the gdp rises. Meaning that individuals have more purchasing power.
+
+
+### Line plots to see if we can find trends, seasonality, or cyclical patterns
+
+#### Line Plot of the number of units sold group by country, store, and product
 ```r
 products = c("Kaggle Mug","Kaggle Hat","Kaggle Sticker")
 
@@ -135,18 +148,22 @@ params = expand.grid(products = products,stores = stores)
 lineplot_list = list()
 
 for(i in 1:nrow(params)){
-  lineplot_list[[i]] = train_final %>% mutate(country = as.factor(country)) %>% filter(product== params[i,1] & store==params[i,2]) %>% ggplot(aes(date,num_sold)) +geom_line(aes(color=country),lwd=0.5) + ylab("Units Sold") + ggtitle(paste0("Line plot of ",params[i,1],"s sold at ",params[i,2])) + theme(plot.title = element_text(size = 10))
+  lineplot_list[[i]] = train_final %>% mutate(country = as.factor(country)) %>% 
+  filter(product== params[i,1] & store==params[i,2]) %>% 
+  ggplot(aes(date,num_sold)) +geom_line(aes(color=country),lwd=0.5) + ylab("Units Sold") + 
+  ggtitle(paste0("Line plot of ",params[i,1],"s sold at ",params[i,2])) + theme(plot.title = element_text(size = 10))
   
 }
 marrangeGrob(lineplot_list,nrow=3,ncol=2)
 ```
 
-![image](https://user-images.githubusercontent.com/73871814/155872833-3847ed47-e9db-4795-b434-fe77fb520009.png)
+![lineplots](https://user-images.githubusercontent.com/73871814/155878053-4a6016f1-923a-420c-bf36-b76e81451e3d.PNG)
+
 
 Looking at the shape of this line plot we can tell that there's some seasonality due to specific spikes year round.
 
 
-##### Line plot of the average units sold, grouped by country, store, and product.
+#### Line plot of the average units sold, grouped by country, store, and product
 
 ```r
 products = c("Kaggle Mug","Kaggle Hat","Kaggle Sticker")
@@ -160,7 +177,10 @@ params = expand.grid(product = products,store = stores,country = country)
 another_list = list()
 
 for(i in 1:nrow(params)){
-another_list[[i]] = train_final %>% filter(product == params[i,1] & store== params[i,2] & country ==params[i,3]) %>% group_by(month,year) %>% summarise(avg_sales = mean(num_sold)) %>% mutate(year = as.factor(year)) %>% ggplot(aes(month,avg_sales,color=year)) + geom_point() + geom_line() + ylab("Average units") +ggtitle(paste0("Avg Sale of ",params[i,1],"s per Month \n ",params[i,2],":",params[i,3])) + theme(plot.title = element_text(size = 8))
+another_list[[i]] = train_final %>% filter(product == params[i,1] & store== params[i,2] & country ==params[i,3]) 
+%>% group_by(month,year) %>% summarise(avg_sales = mean(num_sold)) %>% mutate(year = as.factor(year)) 
+%>% ggplot(aes(month,avg_sales,color=year)) + geom_point() + geom_line() + 
+ylab("Average units") +ggtitle(paste0("Avg Sale of ",params[i,1],"s per Month \n ",params[i,2],":",params[i,3])) + theme(plot.title = element_text(size = 8))
 }
 
 marrangeGrob(another_list,nrow=3,ncol=3)
@@ -172,17 +192,136 @@ marrangeGrob(another_list,nrow=3,ncol=3)
 ![part2](https://user-images.githubusercontent.com/73871814/155876880-a31a263b-e57b-4902-82fe-431a72dbaee3.PNG)
 
 
-##### Line plot of the total units sold, grouped by country, store, and product.
+The line plots show that there's a different seasonality for the different products, the country and comapany doesn't change the seasonality.
 
+#### Line plot of the total units sold, grouped by country, store, and product
 
+```r
+another_list2 = list()
+for(i in 1:nrow(params)){
+another_list2[[i]] = train_final %>% filter(product == params[i,1] & store== params[i,2] & country ==params[i,3]) %>%
+group_by(month,year) %>% summarise(avg_sales = sum(num_sold)) %>% mutate(year = as.factor(year)) %>%
+ggplot(aes(month,avg_sales,color=year)) + geom_point() + geom_line() +
+ylab("Total units") +ggtitle(paste0("Total Units of ",params[i,1],"s Sold per Month \n ",params[i,2],":",params[i,3])) +
+theme(plot.title = element_text(size = 8))
+}
 
+marrangeGrob(another_list2,nrow=3,ncol=3)
+
+```
+![p1](https://user-images.githubusercontent.com/73871814/155878547-6e94c25b-c957-4c3e-a14d-87bbd2e7e084.PNG)
+
+![p2](https://user-images.githubusercontent.com/73871814/155878548-3ae37137-4f58-4922-8c83-b7d23b72288e.PNG)
+
+The line plots of the total units sold is very similar to the line plot of the average units sold in terms of having a different seasonality for the different products.
 
 #### Correlation Plot
+Checking the correlation plot to see if there's highly correlated variables that should be removed
 
 ![image](https://user-images.githubusercontent.com/73871814/155872422-48c7152b-e0e2-498c-b641-1ed97f72dbcf.png)
 
 
 
 
-<a name="modelbuild"></a>
-## 5. Final Model and Submission
+<a name="final_train"></a>
+## 5. Finalizing Train Set
+
+In this step, I removed highly correlated features (abs value of 0.9), applied one hot encoding for categorical features, and standardized the data. The transformations on the test set including this step can be found in the rmd file. 
+
+```r
+#Removing highly correlated features
+
+cutoff=findCorrelation(cor(model.matrix(~0+.,data = train_set_finalized[,-8])),cutoff = 0.9,verbose=TRUE)
+
+#All of the features in the train set are less than my chosen cutoff threshold so I don't remove any.
+
+#One Hot Encoding
+
+dummy = dummyVars("~.",data=train_set_finalized)
+training_data = data.frame(predict(dummy,newdata=train_set_finalized))
+
+#Standardizing the data
+
+#variables that need to be standardized: month,day,weekend,year,gdp
+train_set_finalized = as.data.frame(scale(training_data[,-9],center=TRUE,scale = TRUE))
+train_set_finalized = cbind(train_set_finalized,training_data[,9])
+colnames(train_set_finalized)[15] = "num_sold"
+
+```
+
+<a name="models"></a>
+## 6. Models
+
+This time around, I chose to use the caret package for the model building and tuning phase. Instead of just submitting the finalize model to check the RMSE, I will partition the training set into another called the validation set. This set will be used for cross validation purposes.
+
+```r
+set.seed(4198) #setting a seed to get consistent values
+
+split = createDataPartition(train_set_finalized$num_sold, times = 1,list = FALSE,p = 0.75)
+
+#train set
+t_set = train_set_finalized[split,]
+
+#valid set
+v_set = train_set_finalized[-split,]
+
+```
+
+#### Random Forest Model
+
+The random forest algorithm is essentially an ensemble of bootstrapped regression trees, the mtry value defines the number of predictors sampled at each split.
+```r
+#setting the grid of parameters to test
+rfGrid = expand.grid(mtry=c(3,4,5,6,7)) 
+
+#setting up the training settings, it's a 5 fold cross validation
+trainctrl = trainControl(method = "cv",number = 5)
+
+#caret packages function for training a model
+rf_tune_fit = train(num_sold ~ .,
+data = t_set,
+"rf",
+trControl = trainctrl,tuneGrid = rfGrid,verbose=FALSE)
+
+#the prediction values of the algorithm
+preds=predict(rf_tune_fit,newdata = v_set)
+
+#the RMSE based on the validation set
+(rmse=mean((v_set$num_sold-preds)^2))
+
+#the RMSE of this algorithm is 2754.1
+
+```
+
+#### Extreme Gradient Boost
+
+The extreme gradient boost algorithm is an iterative boosting algorithm that focuses on minimizing the 
+
+```r
+xgb_grid = expand.grid(nrounds = c(500),max_depth = c(2,4,6,8,10),
+eta = c(0.01,0.05,0.1,0.3),
+gamma = c(1,2),
+colsample_bytree=c(0.5,1),
+min_child_weight=1,
+subsample=c(1)
+)
+
+trainctrl = trainControl(method="cv", number = 5, allowParallel = TRUE)
+
+xgb_tune_fit = train(num_sold~.,data=t_set,
+method="xgbTree",
+trControl=trainctrl,
+tuneGrid=xgb_grid,
+verbose=FALSE)
+
+preds=predict(xgb_tune_fit,newdata = v_set)
+
+(rmse=mean((v_set$num_sold-preds)^2))
+
+#the RMSE of this algorithm is 905.61, significantly better than the random forest algorithm
+```
+
+
+
+<a name="summary"></a>
+## 7. Summary
