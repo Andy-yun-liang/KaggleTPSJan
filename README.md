@@ -1,18 +1,24 @@
 # TPS January 2022 Analysis
 
+![rsz_nordic_cross_flags_of_northern_europesvg](https://user-images.githubusercontent.com/73871814/155874153-0f2632bf-26ba-492a-a2ca-a4ee0b8db028.jpg)
 
-This is my first time participating in Kaggle's Tabular Playground Series, the link to the competition: https://www.kaggle.com/c/tabular-playground-series-jan-2022/overview
+This is my first time participating in Kaggle's Tabular Playground Series, the link to the competition: https://www.kaggle.com/c/tabular-playground-series-jan-2022/overview. The purpose of this competition is to build a regression model that predicts the price of certain products hosted by the three different stores on a given future date.
 
 # Table of Contents
-1. [Background and Data Source](#background)
+1. [Data Source](#background)
 2. [Data Preprocssing](#data_preprocessing)
 3. [Feature Engineering](#feature_engineering)
 4. [Visualizations](#viz)
 5. [Final Model and Submission](#modelbuild)
 
 <a name ="background"></a>
-## 1. Background and Data Source
-The purpose of this competition is to build a predict machine that helps determine the prices of the supplies hosted by the three different stores. 
+## 1. Data Source
+
+Training and Testing data:  https://www.kaggle.com/c/tabular-playground-series-jan-2022
+
+GDP data: https://www.kaggle.com/carlmcbrideellis/gdp-20152019-finland-norway-and-sweden
+
+Holiday data: https://www.kaggle.com/lucamassaron/festivities-in-finland-norway-sweden-tsp-0122
 
 
 <a name="data_preprocessing"></a>
