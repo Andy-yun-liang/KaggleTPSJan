@@ -51,6 +51,8 @@ The summary statistics shows that the date, country, store and product variables
 
 ![summary_stats](https://user-images.githubusercontent.com/73871814/155864968-21609126-825a-4e44-b26f-8441eb6b6dcf.PNG)
 
+Note: There's no missing values! So, we don't need to impute anything
+
 ```r
 #fixing data type
 train_data$date = ymd(train_data$date)
