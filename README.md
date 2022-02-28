@@ -2,7 +2,7 @@
 
 ![rsz_nordic_cross_flags_of_northern_europesvg](https://user-images.githubusercontent.com/73871814/155874153-0f2632bf-26ba-492a-a2ca-a4ee0b8db028.jpg)
 
-This is my first time participating in Kaggle's Tabular Playground Series, the link to the competition: https://www.kaggle.com/c/tabular-playground-series-jan-2022/overview. The purpose of this competition is to build a regression model that predicts the number of units sold for each of the different products avaliable.
+This is my first time participating in Kaggle's Tabular Playground Series, the link to the competition: https://www.kaggle.com/c/tabular-playground-series-jan-2022/overview. The purpose of this competition is to build a regression model that predicts the number of units sold for each of the different products avaliable. The metric used to evaluate the models is the SMAPE metric.
 
 # Table of Contents
 1. [Data Source](#background)
@@ -27,7 +27,7 @@ Holiday data: https://www.kaggle.com/lucamassaron/festivities-in-finland-norway-
 <a name="data_preprocessing"></a>
 ## 2. Data Preprocessing
 
-### Loading libraries and the reading files
+### Loading libraries and reading the files
 ```r
 #libraries used
 library(plyr) # used for data wrangling and manipulation like dplyr
