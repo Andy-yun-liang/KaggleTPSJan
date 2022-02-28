@@ -30,12 +30,16 @@ Holiday data: https://www.kaggle.com/lucamassaron/festivities-in-finland-norway-
 ### Loading libraries and the reading files
 ```r
 #libraries used
+library(plyr) # used for data wrangling and manipulation like dplyr
 library(tidyverse) #used for dplyr and ggplot
 library(lubridate) #used for dealing with date times
 library(gridExtra) #used to print ggplot graphs on a single page
 library(corrplot) #used for correlation plot
 library(caret) #used for data partition, one hot encoding and other machine learning tasks such as cross validation
 library(ranger) #used for random forest algorithm
+library(xts) #used to build a time series object
+library(forecast) #used for auto arima
+
 
 #files
 train_data = read.csv("train.csv")
@@ -254,20 +258,7 @@ colnames(train_set_finalized)[15] = "num_sold"
 <a name="models"></a>
 ## 6. Models
 
-This time around, I chose to use the caret package for the model building and tuning phase. Instead of just submitting the finalize model to check the RMSE, I will partition the training set into another called the validation set. This set will be used for cross validation purposes.
-
-```r
-set.seed(4198) #setting a seed to get consistent values
-
-split = createDataPartition(train_set_finalized$num_sold, times = 1,list = FALSE,p = 0.75)
-
-#train set
-t_set = train_set_finalized[split,]
-
-#valid set
-v_set = train_set_finalized[-split,]
-
-```
+This time around, I chose to use the caret package for the model building and tuning phase.
 
 #### Random Forest Model
 
@@ -288,10 +279,6 @@ trControl = trainctrl,tuneGrid = rfGrid,verbose=FALSE)
 #the prediction values of the algorithm
 preds=predict(rf_tune_fit,newdata = v_set)
 
-#the RMSE based on the validation set
-(rmse=mean((v_set$num_sold-preds)^2))
-
-#the RMSE of this algorithm is 2754.1
 
 ```
 
@@ -318,12 +305,27 @@ verbose = FALSE)
 
 preds=predict(xgb_tune_fit,newdata = v_set)
 
-(rmse=mean((v_set$num_sold-preds)^2))
-
-#the RMSE of this algorithm is 905.61, significantly better than the random forest algorithm.
-
-The best tuned setting are nrounds = 500, max_depth = 6, eta = 0.1, gamma = 2, colsample_bytree = 1 ,min_child_weight = 1,and subsample =1
 ```
 
+Other models in the rmd file.
+
 <a name="summary"></a>
+
 ## 7. Summary
+
+The best prediction machine according to the SMAPE metric is the time series based model. 
+
+| Model | Private SMAPE | Public SMAPE |
+| :---  | :---:    |  :---:  |
+| Auto.ARIMA | 7.51945 |5.43903|
+| Random Forest  | 8.44953 | 6.05877|
+| LightGBM   | 10.00833|7.27330|
+| XGBoost    | 9.73415 | 7.29179|
+
+
+I didn't hand in my submission in time as I didn't account for the difference in timezone hence none of the submissions have a tick. :(
+
+
+![models](https://user-images.githubusercontent.com/73871814/155913413-3e25e300-eefd-42d7-8a53-d427bad8bc8f.PNG)
+
+
